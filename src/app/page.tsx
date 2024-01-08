@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 import { api } from "../../services/api";
 import {
+  Input,
   Button,
   Card,
   CardBody,
@@ -11,22 +12,16 @@ import {
 } from "@nextui-org/react";
 import { BsCart3 } from "react-icons/bs";
 
-import { Input } from "@nextui-org/react";
-import { ProductContext } from "@/contexts/ProductContext";
-
-interface Product {
+export interface Product {
   id: number;
   title: string;
   price: number;
-  isEditing: boolean;
 }
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [textInput, setTextInput] = useState("");
   const [items, setItems] = useState<Product[]>([]);
-
-  const numProducts = useContext(ProductContext);
 
   async function loadItems() {
     setLoading(true);
@@ -49,66 +44,9 @@ export default function Home() {
     loadItems();
   }, []);
 
-  async function handleAddItem() {
-    const data: Omit<Product, "id"> = {
-      title: textInput,
-      price: 10,
-      isEditing: false,
-    };
-
-    try {
-      const response = await api.post("/produtos", data);
-      loadItems();
-      console.log("Success:", response);
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  }
-
-  async function handleDeleteItem(itemId: number) {
-    console.log(itemId);
-
-    try {
-      await api.delete(`/produtos/${itemId}`);
-
-      const filteredItems = items.filter((item) => item.id !== itemId);
-      setItems(filteredItems);
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  }
-
-  async function handleEditItem(itemId: number) {
-    let tempItem: any;
-
-    const result = items.map((item) => {
-      if (item.id === itemId) {
-        const updatedItem = { ...item, isEditing: !item.isEditing };
-        tempItem = updatedItem;
-
-        return updatedItem;
-      }
-      return item;
-    });
-
-    setItems(result);
-    if (!tempItem.isEditing) await api.put(`/produtos/${itemId}`, tempItem);
-  }
-
-  function handleChangeItem(itemId: number, textValue: string) {
-    const result = items.map((item) => {
-      if (item.id === itemId) {
-        return { ...item, nome: textValue };
-      }
-      return item;
-    });
-
-    setItems(result);
-  }
-
   return (
     <div className="px-80 flex flex-col gap-5 mt-5">
-      <p>numero de produtos: {numProducts}</p>
+      <p>numero de produtos: </p>
 
       <div className="flex items-center gap-2">
         <Input
@@ -116,9 +54,7 @@ export default function Home() {
           placeholder="Digite o seu texto aqui..."
         />
 
-        <Button color="primary" onClick={handleAddItem}>
-          Enviar
-        </Button>
+        <Button color="primary">Enviar</Button>
       </div>
 
       {/* {loading && <p>Carregando...</p>} */}

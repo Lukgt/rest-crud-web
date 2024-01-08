@@ -8,8 +8,7 @@ import {
   Badge,
 } from "@nextui-org/react";
 import { BsCart3 } from "react-icons/bs";
-import { useContext } from "react";
-import { ProductContext } from "@/contexts/ProductContext";
+import { useShoppingCart } from "@/contexts/ShoppingCartContext";
 
 const links = [
   { name: "Início", href: "/" },
@@ -19,7 +18,7 @@ const links = [
 
 export function Header() {
   const pathname = usePathname();
-  const numProducts = useContext(ProductContext);
+  const products = useShoppingCart();
 
   return (
     <Navbar position="static" isBordered>
@@ -33,7 +32,7 @@ export function Header() {
         ))}
       </NavbarContent>
 
-      <Badge color="primary" content={numProducts} shape="circle">
+      <Badge color="primary" content={products.length} shape="circle">
         <BsCart3 className="fill-current" size={30} />
       </Badge>
     </Navbar>

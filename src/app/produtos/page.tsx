@@ -1,13 +1,16 @@
 "use client";
-import { ProductContext } from "@/contexts/ProductContext";
-import { useContext } from "react";
+import { useShoppingCart } from "@/contexts/ShoppingCartContext";
 
 export default function ProductsPage() {
-  const numProducts = useContext(ProductContext);
+  const products = useShoppingCart();
 
   return (
-    <p className="text-2xl">
-      Página de produtos Numero de produtos {numProducts}
-    </p>
+    <div>
+      <ul>
+        {products.map((product) => (
+          <li key={product.id}>{product.title}</li>
+        ))}
+      </ul>
+    </div>
   );
 }
